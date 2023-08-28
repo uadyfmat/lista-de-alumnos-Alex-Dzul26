@@ -18,27 +18,40 @@ typedef struct
 
 Alumno *crearAlumno(char *, int, int);
 void imprimirAlumno(Alumno);
-Nodo *crearNodo(Alumno *);
-void insertarNodoOrdenadoCreditos(Nodo *, Nodo **);
+Nodo *crearNodo(Nodo*, Alumno *);
+void insertarNodoOrdenadoCreditos(Alumno*, Nodo **);
 void imprimirLista(Nodo **);
+void insertar_nodo_inicial(Alumno* alumno, Nodo **cabeza);
+Nodo* crear_lista();
 
 int main()
 {
+    Nodo* cabeza;
 
-    Nodo **cabeza = NULL;
+    cabeza = crear_lista();
+    insertar_nodo_inicial(crearAlumno("Alex", 56, 6), &cabeza);
 
-    insertarNodoOrdenadoCreditos(crearNodo(crearAlumno("Alex", 56, 6)), cabeza);
-    insertarNodoOrdenadoCreditos(crearNodo(crearAlumno("DECO", 2, 2)), cabeza);
-    insertarNodoOrdenadoCreditos(crearNodo(crearAlumno("Rodrigo", 6, 4)), cabeza);
-    insertarNodoOrdenadoCreditos(crearNodo(crearAlumno("David", 17, 6)), cabeza);
-    insertarNodoOrdenadoCreditos(crearNodo(crearAlumno("Juan", 101, 5)), cabeza);
+    insertarNodoOrdenadoCreditos(crearAlumno("DECO", 2, 2), &cabeza);
+    insertarNodoOrdenadoCreditos(crearAlumno("Rodrigo", 6, 4), &cabeza);
+    insertarNodoOrdenadoCreditos(crearAlumno("David", 17, 6), &cabeza);
+    insertarNodoOrdenadoCreditos(crearAlumno("Juan", 101, 5), &cabeza);
 
-    imprimirLista(cabeza);
+    imprimirLista(&cabeza);
 
     return 0;
 }
 
-Alumno *crearAlumno(char *nombre, int semestre, int creditos)
+Nodo* crear_lista(){
+    Nodo* cabeza;
+    cabeza = NULL;
+    return cabeza;
+}
+
+void insertar_nodo_inicial(Alumno* alumno, Nodo **cabeza){
+    *cabeza = crearNodo(NULL, alumno);
+}
+
+Alumno *crearAlumno(char *nombre, int creditos, int semestre)
 {
     Alumno *nuevo = (Alumno *)malloc(sizeof(Alumno));
     nuevo->Nombre = nombre;
@@ -49,70 +62,54 @@ Alumno *crearAlumno(char *nombre, int semestre, int creditos)
 
 void imprimirAlumno(Alumno alum)
 {
-    printf("Nombre Completo: %s\nCreditos Aprovados: %d\nSemestre Equivalente: %d", alum.Nombre, alum.Creditos, alum.Semestre);
+    printf("\nNombre Completo: %s\nCreditos Aprovados: %d\nSemestre Equivalente: %d", alum.Nombre, alum.Creditos, alum.Semestre);
 }
 
-Nodo *crearNodo(Alumno *alum)
+Nodo *crearNodo(Nodo* sig, Alumno *dato)
 {
     Nodo *nuevo = (Nodo *)malloc(sizeof(Nodo));
-    nuevo->alum.Nombre = alum->Nombre;
-    nuevo->alum.Creditos = alum->Creditos;
-    nuevo->alum.Semestre = alum->Semestre;
-    nuevo->siguiente = NULL;
+    nuevo->alum.Nombre = dato->Nombre;
+    nuevo->alum.Creditos = dato->Creditos;
+    nuevo->alum.Semestre = dato->Semestre;
+    nuevo->siguiente = sig;
     return nuevo;
 }
 
-void insertarNodoOrdenadoCreditos(Nodo *Alumno, Nodo **cabeza)
-{
-    Nodo *actual = cabeza;
-    Nodo *anterior = cabeza;
+void insertarNodoOrdenadoCreditos(Alumno* alumno, Nodo **cabeza){
+    Nodo* ultimo;
+    Nodo* siguiente;
+    
+    ultimo = NULL;
+    siguiente = *cabeza;
 
-    if (actual == NULL)
-    {
-        actual = Alumno;
+    while(siguiente != NULL){
+        if(alumno->Creditos >= siguiente->alum.Creditos){
+            if(siguiente == *cabeza){
+                *cabeza = crearNodo(siguiente, alumno);
+            }
+            else{
+                ultimo->siguiente = crearNodo(siguiente, alumno);
+            }
+            break;
+        }
+        else{
+            ultimo = siguiente;
+            siguiente = siguiente->siguiente;
+        }
     }
-    else
-    {
-        if (actual->alum.Creditos < Alumno->alum.Creditos)
-        {
-            *cabeza = Alumno;
-            Alumno->siguiente = actual->siguiente;
-        }
-        else
-        {
-            actual = actual->siguiente;
-
-            while (actual != NULL)
-            {
-                if (actual->alum.Creditos > Alumno->alum.Creditos)
-                {
-                    anterior = actual;
-                    actual = actual->siguiente;
-                }
-                else
-                {
-                    break;
-                }
-            }
-            anterior->siguiente = Alumno;
-            if (actual == NULL)
-            {
-                Alumno->siguiente = NULL;
-            }
-            else
-            {
-                Alumno->siguiente = actual->siguiente;
-            }
-        }
+    if(siguiente == NULL){
+        ultimo->siguiente = crearNodo(NULL, alumno);
     }
 }
 
 void imprimirLista(Nodo **cabeza)
 {
-    Nodo *actual = *cabeza;
+    Nodo *actual;
+    actual = *cabeza;
 
     while (actual != NULL)
     {
         imprimirAlumno(actual->alum);
+        actual = actual->siguiente;
     }
 }
