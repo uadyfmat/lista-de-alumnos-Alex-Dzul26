@@ -29,12 +29,12 @@ int main()
     Nodo* cabeza;
 
     cabeza = crear_lista();
-    insertar_nodo_inicial(crearAlumno("Alex", 56, 6), &cabeza);
+    insertar_nodo_inicial(crearAlumno("Alex Dzul", 56, 6), &cabeza);
 
-    insertarNodoOrdenadoCreditos(crearAlumno("DECO", 2, 2), &cabeza);
-    insertarNodoOrdenadoCreditos(crearAlumno("Rodrigo", 6, 4), &cabeza);
-    insertarNodoOrdenadoCreditos(crearAlumno("David", 17, 6), &cabeza);
-    insertarNodoOrdenadoCreditos(crearAlumno("Juan", 101, 5), &cabeza);
+    insertarNodoOrdenadoCreditos(crearAlumno("Julio Cesar", 2, 2), &cabeza);
+    insertarNodoOrdenadoCreditos(crearAlumno("Rodrigo Adrian", 6, 4), &cabeza);
+    insertarNodoOrdenadoCreditos(crearAlumno("David Chable", 17, 6), &cabeza);
+    insertarNodoOrdenadoCreditos(crearAlumno("Juan Kao", 101, 5), &cabeza);
 
     imprimirLista(&cabeza);
 
@@ -57,12 +57,13 @@ Alumno *crearAlumno(char *nombre, int creditos, int semestre)
     nuevo->Nombre = nombre;
     nuevo->Creditos = creditos;
     nuevo->Semestre = semestre;
+    printf("Se ha creado una estructura Alumno en la direccion %x", nuevo);
     return nuevo;
 }
 
 void imprimirAlumno(Alumno alum)
 {
-    printf("\nNombre Completo: %s\nCreditos Aprovados: %d\nSemestre Equivalente: %d", alum.Nombre, alum.Creditos, alum.Semestre);
+    printf("Nombre: %s, Creditos Aprobados: %d, Semestre Equivalente: %d\n", alum.Nombre, alum.Creditos, alum.Semestre);
 }
 
 Nodo *crearNodo(Nodo* sig, Alumno *dato)
@@ -72,6 +73,7 @@ Nodo *crearNodo(Nodo* sig, Alumno *dato)
     nuevo->alum.Creditos = dato->Creditos;
     nuevo->alum.Semestre = dato->Semestre;
     nuevo->siguiente = sig;
+    printf("\nSe ha creado un Nodo en la lista de Alumnos en %x\n", nuevo);
     return nuevo;
 }
 
@@ -106,6 +108,8 @@ void imprimirLista(Nodo **cabeza)
 {
     Nodo *actual;
     actual = *cabeza;
+
+    printf("\nImpresion de la lista de Alumnos: \n\n");
 
     while (actual != NULL)
     {
